@@ -1,7 +1,7 @@
-# vue-calendar
+# frontend-calendar
 
 ```
-Simple Calendar App build using vue + firebase
+Frontend Calendar App using vue and vuetify
 ```
 
 ## Project setup
@@ -27,9 +27,4 @@ npm run test
 ### Lints and fixes files
 ```
 npm run lint
-```
-
-### Web
-```
-https://calendar-vue-app.herokuapp.com/
 ```
