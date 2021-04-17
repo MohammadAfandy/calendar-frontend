@@ -241,7 +241,7 @@ export default {
     Container,
   },
   data: () => ({
-    token: null,
+    token: localStorage.getItem('token'),
     username: null,
     fullname: null,
     email: null,
