@@ -3,7 +3,7 @@
     <v-col v-if="!isLoggedIn">
       <v-btn
         outlined
-        href="http://192.168.0.101:9001/api/auth/google/login"
+        :href="loginUrl"
       >
       <v-icon left>mdi-google</v-icon>
       Sign In
@@ -563,6 +563,7 @@ export default {
   },
   data() {
     return {
+      loginUrl: process.env.VUE_APP_BACKEND_URL + '/api/auth/google/login',
       today: moment().format('YYYY-MM-DD'),
       focus: moment().format('YYYY-MM-DD'),
       month: moment().format('YYYY-MM'),
