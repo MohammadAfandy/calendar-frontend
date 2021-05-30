@@ -418,26 +418,36 @@ export default {
   },
   methods: {
     async getEvents() {
-      let { data: events } = await Api().get('/api/events', {
-        params: {
-          startDate: this.start.date,
-          endDate: this.end.date,
-          // name,
-          // tags,
-        }
-      });
-      events = events.map((event) => ({
-        ...event,
-        start: moment(event.startDate).format('YYYY-MM-DD HH:mm'),
-        end: moment(event.endDate).format('YYYY-MM-DD HH:mm'),
-      }));
-      this.events = events;
+      try {
+        let { data: events } = await Api().get('/api/events', {
+          params: {
+            startDate: this.start.date,
+            endDate: this.end.date,
+            // name,
+            // tags,
+          }
+        });
+        events = events.map((event) => ({
+          ...event,
+          start: moment(event.startDate).format('YYYY-MM-DD HH:mm'),
+          end: moment(event.endDate).format('YYYY-MM-DD HH:mm'),
+        }));
+        this.events = events;
 
-      let tags = new Set([...this.tag.items]);
-      events.forEach((v) => {
-        tags = new Set([ ...tags, ...v.tags]);
-      });
-      this.tag.items = [...tags];
+        let tags = new Set([...this.tag.items]);
+        events.forEach((v) => {
+          tags = new Set([ ...tags, ...v.tags]);
+        });
+        this.tag.items = [...tags];
+      } catch (err) {
+         if ([401, 403].includes(err.response.status)) {
+          localStorage.removeItem('token');
+          alert('Please Relogin');
+          window.location.href = '/';
+        } else {
+          alert(err.response.data.message);
+        }
+      }
     },
     changeMonth() {
       this.$refs.menuMonth.save(this.month);
@@ -542,6 +552,10 @@ export default {
       } catch(err) {
         if (err.response.status === 422) {
           alert(err.response.data.error.map((v) => v.message).join('\n'));
+        } else if ([401, 403].includes(err.response.status)) {
+          localStorage.removeItem('token');
+          alert('Please Relogin');
+          window.location.href = '/';
         } else {
           alert(err.response.data.message);
         }
@@ -555,6 +569,10 @@ export default {
       } catch (err) {
         if (err.response.status === 422) {
           alert(err.response.data.error.map((v) => v.message).join('\n'));
+        } else if ([401, 403].includes(err.response.status)) {
+          localStorage.removeItem('token');
+          alert('Please Relogin');
+          window.location.href = '/';
         } else {
           alert(err.response.data.message);
         }

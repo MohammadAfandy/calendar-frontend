@@ -17,7 +17,7 @@
       </div>
       <span>CALENDAR APP</span>
       <v-spacer></v-spacer>
-      <v-menu offset-y transition="slide-y-transition" bottom>
+      <v-menu v-if="isLoggedIn" offset-y transition="slide-y-transition" bottom>
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" text>{{ email }}</v-btn>
         </template>
@@ -204,7 +204,13 @@ export default {
           this.fillProfile(data);
         }
       } catch(err) {
-        alert(err.response.data.message);
+        if ([401, 403].includes(err.response.status)) {
+          localStorage.removeItem('token');
+          alert('Please Relogin');
+          window.location.href = '/';
+        } else {
+          alert(err.response.data.message);
+        }
       }
     },
     async openProfile() {
@@ -221,7 +227,11 @@ export default {
         });
         this.profileDialog = false;
       } catch(err) {
-        if (err.response.status === 422) {
+        if ([401, 403].includes(err.response.status)) {
+          localStorage.removeItem('token');
+          alert('Please Relogin');
+          window.location.href = '/';
+        } else if (err.response.status === 422) {
           alert(err.response.data.error.map((v) => v.message).join('\n'));
         } else {
           alert(err.response.data.message);
